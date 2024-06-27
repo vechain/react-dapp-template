@@ -2,16 +2,77 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "setup-contracts": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^compile",
+        "@repo/contracts#check-contracts-deployment"
+      ]
+    },
+    "setup-contracts:testnet": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^compile",
+        "@repo/contracts#check-contracts-deployment:testnet"
+      ]
+    },
+    "setup-contracts:mainnet": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^compile",
+        "@repo/contracts#check-contracts-deployment:mainnet"
+      ]
+    },
+    "@repo/config#check-or-generate-local-config": {
+      "cache": false
+    },
+    "@repo/contracts#check-contracts-deployment": {
+      "cache": false,
+      "dependsOn": [
+        "^compile",
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "@repo/contracts#check-contracts-deployment:testnet": {
+      "cache": false,
+      "dependsOn": [
+        "^compile",
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "@repo/contracts#check-contracts-deployment:mainnet": {
+      "cache": false,
+      "dependsOn": [
+        "^compile",
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "clean": {
+      "cache": false
     }
   }
 }
