@@ -1,8 +1,8 @@
 import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "solo-staging",
-  basePath: "https://b3tr-frontend.vercel.app",
-  inboxContractAddress: "e03f4f5f6a753dae2dac30a69dfe21f7",
+  basePath: "https://example.app",
+  inboxContractAddress: "",
   nodeUrl: "https://thor-solo.dev.b3tr.vechain.org",
   network: {
     id: "solo-staging",

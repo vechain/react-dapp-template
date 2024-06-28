@@ -21,7 +21,23 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "dependsOn": [
+        "^setup-contracts"
+      ]
+    },
+    "dev:testnet": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^setup-contracts:testnet"
+      ]
+    },
+    "dev:mainnet": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": [
+        "^setup-contracts:mainnet"
+      ]
     },
     "setup-contracts": {
       "cache": false,
@@ -73,6 +89,65 @@
     },
     "clean": {
       "cache": false
+    },
+    "compile": {
+      "cache": false,
+      "dependsOn": [
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "deploy": {
+      "dependsOn": [
+        "^deploy",
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "deploy:testnet": {
+      "dependsOn": [
+        "^deploy:testnet"
+      ]
+    },
+    "deploy:mainnet": {
+      "dependsOn": [
+        "^deploy:mainnet"
+      ]
+    },
+    "test": {
+      "cache": false,
+      "dependsOn": [
+        "^compile",
+        "@repo/config#check-or-generate-local-config",
+        "test:hardhat"
+      ]
+    },
+    "test:watch": {
+      "cache": false,
+      "dependsOn": [
+        "^compile",
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "test:coverage:fe": {
+      "cache": false,
+      "dependsOn": [
+        "^compile",
+        "@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "test:coverage:solidity": {
+      "cache": false,
+      "dependsOn": [
+        "^@repo/config#check-or-generate-local-config"
+      ]
+    },
+    "test:thor-solo": {
+      "cache": false
+    },
+    "test:hardhat": {
+      "cache": false,
+      "dependsOn": [
+        "@repo/config#check-or-generate-local-config"
+      ]
     }
   }
 }
