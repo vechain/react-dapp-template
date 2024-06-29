@@ -2,7 +2,7 @@ import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "mainnet",
   basePath: "https://governance.vebetterdao.org",
-  inboxContractAddress: "",
+  inboxContractAddress: "0x9e993Ac115BF2AC3Dee79f7652E2289c55c9C176",
   nodeUrl: "https://mainnet.vechain.org",
   network: {
     id: "main",
