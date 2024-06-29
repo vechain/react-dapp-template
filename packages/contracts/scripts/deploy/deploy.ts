@@ -19,7 +19,7 @@ export async function deployAll(config: ContractsConfig) {
   // Deploy the fiorino contract
   const contractName = "Fiorino";
   const FiorinoContract = await ethers.getContractFactory(contractName);
-  const fiorino = await FiorinoContract.deploy("Hello, world!");
+  const fiorino = await FiorinoContract.deploy();
   await fiorino.waitForDeployment();
   console.log(`${contractName} impl.: ${await fiorino.getAddress()}`);
 

@@ -18,8 +18,6 @@ contract Fiorino {
 
     error InsufficientBalance(uint requested, uint available);
 
-    // Sends an amount of existing coins
-    // from any caller to an address
     function send(address receiver, uint amount) public {
         require(amount <= balances[msg.sender], "Insufficient balance!");
         balances[msg.sender] -= amount;
