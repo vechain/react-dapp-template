@@ -2,7 +2,7 @@ import { AppConfig } from "."
  const config: AppConfig = {
   "environment": "solo-staging",
   "basePath": "https://example.app",
-  "fiorinoContractAddress": "0x8A5E61FAdd0dAD5703b940524BA6Dcdd694BF380",
+  "fiorinoContractAddress": "0x95CA86902554eC183daC066933411640f4aF86dC",
   "nodeUrl": "https://thor-solo.dev.b3tr.vechain.org",
   "network": {
     "id": "solo-staging",

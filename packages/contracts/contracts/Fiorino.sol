@@ -11,6 +11,10 @@ contract Fiorino {
         minter = msg.sender;
     }
 
+    function getMinter() public view returns (address) {
+        return minter;
+    }
+
     function mint(address receiver, uint amount) public {
         require(msg.sender == minter);
         balances[receiver] += amount;

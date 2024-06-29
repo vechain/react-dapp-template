@@ -20,8 +20,7 @@ const config: HardhatUserConfig = {
 };
 
 const getEnvMnemonic = () => {
-  const mnemonic =
-    "denial kitchen pet squirrel other broom bar gas better priority spoil cross";
+  const mnemonic = process.env.MNEMONIC;
 
   return mnemonic ?? "";
 };

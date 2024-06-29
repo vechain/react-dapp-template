@@ -14,7 +14,8 @@ export type AppConfig = {
 };
 
 export const getConfig = (env?: EnvConfig): AppConfig => {
-  const appEnv = env || process.env.NEXT_PUBLIC_APP_ENV;
+  console.log("process.env", process.env.NEXT_PUBLIC_APP_ENV);
+  const appEnv = env || process.env.NEXT_PUBLIC_APP_ENV || "solo-staging";
   if (!appEnv)
     throw new Error(
       "NEXT_PUBLIC_APP_ENV env variable must be set or a type must be passed to getConfig()"

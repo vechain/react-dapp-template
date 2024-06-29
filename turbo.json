@@ -1,13 +1,20 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "tasks": {
+  "globalDotEnv": [
+    ".env"
+  ],
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
+  "globalEnv": [
+    "NEXT_PUBLIC_APP_ENV",
+    "MNEMONIC"
+  ],
+  "pipeline": {
     "build": {
       "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*"
+        "^compile",
+        "@repo/config#check-or-generate-local-config"
       ],
       "outputs": [
         ".next/**",
