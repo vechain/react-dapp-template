@@ -24,10 +24,10 @@ async function main() {
 // check if the contracts specified in the config file are deployed on the network, if not, deploy them (only on solo network)
 async function checkContractsDeployment() {
   try {
-    const code = await ethers.provider.getCode(config.inboxContractAddress);
+    const code = await ethers.provider.getCode(config.fiorinoContractAddress);
     if (code === "0x") {
       console.log(
-        `inbox contract not deployed at address ${config.inboxContractAddress}`
+        `fiorino contract not deployed at address ${config.fiorinoContractAddress}`
       );
       if (isSoloNetwork) {
         // deploy the contracts and override the config file
@@ -38,7 +38,7 @@ async function checkContractsDeployment() {
           config.network
         );
       } else console.log(`Skipping deployment on ${network.name}`);
-    } else console.log(`inbox contract already deployed`);
+    } else console.log(`fiorino contract already deployed`);
   } catch (e) {
     console.log(e);
   }
@@ -50,7 +50,7 @@ async function overrideLocalConfigWithNewContracts(
 ) {
   const newConfig: AppConfig = {
     ...config,
-    inboxContractAddress: await contracts.inbox.getAddress(),
+    fiorinoContractAddress: await contracts.fiorino.getAddress(),
   };
 
   // eslint-disable-next-line

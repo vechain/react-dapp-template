@@ -2,7 +2,7 @@ import { AppConfig } from ".";
 const config: AppConfig = {
   environment: "solo-staging",
   basePath: "http://localhost:3000",
-  inboxContractAddress: "0x9e993Ac115BF2AC3Dee79f7652E2289c55c9C176",
+  fiorinoContractAddress: "0x9e993Ac115BF2AC3Dee79f7652E2289c55c9C176",
   nodeUrl: "http://localhost:8669",
   network: {
     id: "solo",

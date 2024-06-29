@@ -8,7 +8,7 @@ import { Network } from "@repo/constants";
 export type AppConfig = {
   environment: EnvConfig;
   basePath?: string;
-  inboxContractAddress: string;
+  fiorinoContractAddress: string;
   nodeUrl: string;
   network: Network;
 };

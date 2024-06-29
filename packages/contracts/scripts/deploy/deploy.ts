@@ -1,5 +1,5 @@
 import { ethers, network } from "hardhat";
-import { Inbox } from "../../typechain-types";
+import { Fiorino } from "../../typechain-types";
 import { ContractsConfig } from "@repo/config/contracts/type";
 import { HttpNetworkConfig } from "hardhat/types";
 import { deployProxy, saveContractsToFile } from "../helpers";
@@ -16,12 +16,12 @@ export async function deployAll(config: ContractsConfig) {
 
   // ---------------------- Deploy Contracts ----------------------
 
-  // Deploy the inbox contract
-  const contractName = "Inbox";
-  const InboxContract = await ethers.getContractFactory(contractName);
-  const inbox = await InboxContract.deploy("Hello, world!");
-  await inbox.waitForDeployment();
-  console.log(`${contractName} impl.: ${await inbox.getAddress()}`);
+  // Deploy the fiorino contract
+  const contractName = "Fiorino";
+  const FiorinoContract = await ethers.getContractFactory(contractName);
+  const fiorino = await FiorinoContract.deploy("Hello, world!");
+  await fiorino.waitForDeployment();
+  console.log(`${contractName} impl.: ${await fiorino.getAddress()}`);
 
   const date = new Date(performance.now() - start);
   console.log(
@@ -29,7 +29,7 @@ export async function deployAll(config: ContractsConfig) {
   );
 
   const contractAddresses: Record<string, string> = {
-    inbox: await inbox.getAddress(),
+    fiorino: await fiorino.getAddress(),
   };
 
   console.log(
@@ -49,7 +49,7 @@ export async function deployAll(config: ContractsConfig) {
   );
 
   return {
-    inbox,
+    fiorino,
   };
   // close the script
 }
