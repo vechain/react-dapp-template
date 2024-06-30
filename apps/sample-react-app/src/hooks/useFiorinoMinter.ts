@@ -4,7 +4,9 @@ import { getCallKey, useCall } from "../utils/hooks/useCall";
 import { useWallet } from "@vechain/dapp-kit-react";
 import { compareAddresses } from "@repo/utils/AddressUtils";
 
-const contractAddress = getConfig().fiorinoContractAddress;
+const contractAddress = getConfig(
+  import.meta.env.VITE_APP_ENV
+).fiorinoContractAddress;
 const contractInterface = Fiorino__factory.createInterface();
 const method = "getMinter";
 

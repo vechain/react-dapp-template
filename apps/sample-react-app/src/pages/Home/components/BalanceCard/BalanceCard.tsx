@@ -1,5 +1,5 @@
 import { Card, CardBody, HStack, Image, Text } from "@chakra-ui/react";
-import fiorino from "./fiorino.jpeg";
+import fiorino from "../../../../assets/fiorino.jpeg";
 
 export const BalanceCard = () => {
   const balance = "0";

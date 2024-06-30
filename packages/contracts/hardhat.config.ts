@@ -26,8 +26,8 @@ const getEnvMnemonic = () => {
 };
 
 const getSoloUrl = () => {
-  const url = process.env.NEXT_PUBLIC_APP_ENV
-    ? getConfig(process.env.NEXT_PUBLIC_APP_ENV as EnvConfig).network.urls[0]
+  const url = process.env.VITE_APP_ENV
+    ? getConfig(process.env.VITE_APP_ENV as EnvConfig).network.urls[0]
     : VECHAIN_URL_SOLO;
   return url;
 };

@@ -8,7 +8,7 @@ export async function deployAll(config: ContractsConfig) {
   const start = performance.now();
   const networkConfig = network.config as HttpNetworkConfig;
   console.log(
-    `================  Deploying contracts on ${network.name} (${networkConfig.url}) with ${config.NEXT_PUBLIC_APP_ENV} configurations `
+    `================  Deploying contracts on ${network.name} (${networkConfig.url}) with ${config.VITE_APP_ENV} configurations `
   );
   const [deployer] = await ethers.getSigners();
 
