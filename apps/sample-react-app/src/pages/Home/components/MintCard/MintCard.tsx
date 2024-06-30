@@ -4,6 +4,7 @@ import {
   Card,
   CardBody,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -13,6 +14,7 @@ import {
 import { useFiorinoMinter } from "../../../../hooks/useFiorinoMinter";
 import { useForm } from "react-hook-form";
 import { useCallback } from "react";
+import { useMintFiorino } from "../../../../hooks/useMintFiorino";
 
 interface MintForm {
   amount: string;
@@ -21,9 +23,21 @@ interface MintForm {
 
 export const MintCard = () => {
   const form = useForm<MintForm>();
-  const onSubmit = useCallback((data) => {
-    console.log("data", data);
-  }, []);
+
+  const { errors } = form.formState;
+
+  const mintMutation = useMintFiorino({
+    onSuccess: () => {
+      console.log("mint success");
+    },
+  });
+
+  const onSubmit = useCallback(
+    (data) => {
+      mintMutation.sendTransaction(data);
+    },
+    [mintMutation]
+  );
 
   const minter = useFiorinoMinter();
   console.log("minter", minter);
@@ -46,13 +60,37 @@ export const MintCard = () => {
             <Text fontSize="lg" fontWeight="bold">
               Mint
             </Text>
-            <FormControl>
+            <FormControl isInvalid={!!errors.amount}>
               <FormLabel>Amount</FormLabel>
-              <Input {...form.register("amount")} />
+              <Input
+                {...form.register("amount", {
+                  required: {
+                    value: true,
+                    message: "Amount is required",
+                  },
+                  pattern: {
+                    value: /^\d+$/,
+                    message: "Invalid amount",
+                  },
+                })}
+              />
+              <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={!!errors.amount}>
               <FormLabel>Receiver</FormLabel>
-              <Input {...form.register("receiver")} />
+              <Input
+                {...form.register("receiver", {
+                  required: {
+                    value: true,
+                    message: "Receiver is required",
+                  },
+                  pattern: {
+                    value: /^0x[a-fA-F0-9]{40}$/,
+                    message: "Invalid address",
+                  },
+                })}
+              />
+              <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
             </FormControl>
             <Button type="submit" colorScheme="blue">
               Mint

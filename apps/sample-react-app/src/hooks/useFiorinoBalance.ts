@@ -8,21 +8,19 @@ const contractAddress = getConfig(
   import.meta.env.VITE_APP_ENV
 ).fiorinoContractAddress;
 const contractInterface = Fiorino__factory.createInterface();
-const method = "owner";
+const method = "balanceOf";
 
 export const getFiorinoMinterQueryKey = () => {
   getCallKey({ method });
 };
 
-export const useFiorinoMinter = () => {
+export const useFiorinoBalance = () => {
   const { account } = useWallet();
-  console.log("account", account);
-  console.log("contractInterface", contractInterface);
-  console.log("contractAddress", contractAddress);
   const results = useCall({
     contractInterface,
     contractAddress,
     method,
+    args: [account],
   });
 
   return {

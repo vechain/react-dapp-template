@@ -1,31 +1,18 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+// Compatible with OpenZeppelin Contracts ^5.0.0
+pragma solidity ^0.8.20;
 
-contract Fiorino {
-    address public minter;
-    mapping(address => uint) public balances;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    event Sent(address from, address to, uint amount);
-
-    constructor() {
-        minter = msg.sender;
+contract Fiorino is ERC20, Ownable {
+    constructor(
+        address initialOwner
+    ) ERC20("Fiorino", "FI") Ownable(initialOwner) {
+        _mint(msg.sender, 100000 * 10 ** decimals());
     }
 
-    function getMinter() public view returns (address) {
-        return minter;
-    }
-
-    function mint(address receiver, uint amount) public {
-        require(msg.sender == minter);
-        balances[receiver] += amount;
-    }
-
-    error InsufficientBalance(uint requested, uint available);
-
-    function send(address receiver, uint amount) public {
-        require(amount <= balances[msg.sender], "Insufficient balance!");
-        balances[msg.sender] -= amount;
-        balances[receiver] += amount;
-        emit Sent(msg.sender, receiver, amount);
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
     }
 }

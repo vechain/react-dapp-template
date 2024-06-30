@@ -52,7 +52,7 @@ export const useCall = <T extends Interface>({
       const res = await thor
         .account(contractAddress)
         .method(JSON.parse(functionFragment))
-        .call();
+        .call(...args);
 
       if (res.vmError)
         return Promise.reject(

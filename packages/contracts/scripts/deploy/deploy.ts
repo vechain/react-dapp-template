@@ -1,8 +1,7 @@
 import { ethers, network } from "hardhat";
-import { Fiorino } from "../../typechain-types";
 import { ContractsConfig } from "@repo/config/contracts/type";
 import { HttpNetworkConfig } from "hardhat/types";
-import { deployProxy, saveContractsToFile } from "../helpers";
+import { saveContractsToFile } from "../helpers";
 
 export async function deployAll(config: ContractsConfig) {
   const start = performance.now();
@@ -19,7 +18,9 @@ export async function deployAll(config: ContractsConfig) {
   // Deploy the fiorino contract
   const contractName = "Fiorino";
   const FiorinoContract = await ethers.getContractFactory(contractName);
-  const fiorino = await FiorinoContract.deploy();
+  const fiorino = await FiorinoContract.deploy(
+    "0x9072EE3bd63a8E8e9f9b35F288FbD0E19fAD3167"
+  );
   await fiorino.waitForDeployment();
   console.log(`${contractName} impl.: ${await fiorino.getAddress()}`);
 

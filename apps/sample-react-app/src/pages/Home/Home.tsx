@@ -5,7 +5,7 @@ import { SendCard } from "./components/SendCard";
 
 export const Home = () => {
   return (
-    <VStack align="stretch">
+    <VStack align="stretch" gap={4}>
       <BalanceCard />
       <MintCard />
       <SendCard />
