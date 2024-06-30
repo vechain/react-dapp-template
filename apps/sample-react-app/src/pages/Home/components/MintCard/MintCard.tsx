@@ -10,6 +10,7 @@ import {
   Input,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useFiorinoMinter } from "../../../../hooks/useFiorinoMinter";
 import { useForm } from "react-hook-form";
@@ -23,17 +24,26 @@ interface MintForm {
 
 export const MintCard = () => {
   const form = useForm<MintForm>();
+  const toast = useToast();
 
   const { errors } = form.formState;
 
   const mintMutation = useMintFiorino({
     onSuccess: () => {
-      console.log("mint success");
+      form.reset();
+      mintMutation.resetStatus();
+      toast({
+        title: "Success",
+        description: "Minted correctly!",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
     },
   });
 
   const onSubmit = useCallback(
-    (data) => {
+    (data: MintForm) => {
       mintMutation.sendTransaction(data);
     },
     [mintMutation]
@@ -51,6 +61,7 @@ export const MintCard = () => {
           align={"stretch"}
           as="form"
           onSubmit={form.handleSubmit(onSubmit)}
+          gap={4}
         >
           <HStack justify={"flex-end"} w="full">
             {isMinter && <Badge colorScheme="orange">Admin</Badge>}
@@ -89,7 +100,7 @@ export const MintCard = () => {
                   },
                 })}
               />
-              <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.receiver?.message}</FormErrorMessage>
             </FormControl>
             <Button type="submit" colorScheme="blue">
               Mint

@@ -10,7 +10,8 @@ const contractAddress = getConfig(
 const contractInterface = Fiorino__factory.createInterface();
 const method = "balanceOf";
 
-export const getFiorinoBalanceQueryKey = () => getCallKey({ method });
+export const getFiorinoBalanceQueryKey = (address: string) =>
+  getCallKey({ method, keyArgs: [address] });
 
 export const useFiorinoBalance = () => {
   const { account } = useWallet();

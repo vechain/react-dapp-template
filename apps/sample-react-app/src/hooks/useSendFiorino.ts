@@ -11,24 +11,24 @@ const GovernorInterface = Fiorino__factory.createInterface();
 
 type Props = { onSuccess?: () => void };
 
-type useMintFiorinoParams = {
+type useSendFiorinoParams = {
   amount: string;
   receiver: string;
 };
 
-export const useMintFiorino = ({ onSuccess }: Props) => {
+export const useSendFiorino = ({ onSuccess }: Props) => {
   const { account } = useWallet();
 
   const clauseBuilder = useCallback(
-    ({ amount, receiver }: useMintFiorinoParams) => {
+    ({ amount, receiver }: useSendFiorinoParams) => {
       const contractAmount = ethers.parseEther(amount);
       return [
         buildClause({
           to: getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress,
           contractInterface: GovernorInterface,
-          method: "mint",
+          method: "transfer",
           args: [receiver, contractAmount],
-          comment: "mint fiorino",
+          comment: "transfer fiorino",
         }),
       ];
     },
