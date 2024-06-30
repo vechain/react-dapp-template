@@ -97,6 +97,9 @@
     "clean": {
       "cache": false
     },
+    "purge": {
+      "cache": false
+    },
     "compile": {
       "cache": false,
       "dependsOn": [

@@ -4,6 +4,8 @@
   "scripts": {
     "build": "turbo build",
     "lint": "turbo lint",
+    "clean": "turbo clean",
+    "purge": "turbo purge",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "dev": "yarn && dotenv -v VITE_APP_ENV=local -- turbo dev --",
     "dev:staging": "yarn && dotenv -v VITE_APP_ENV=solo-staging -e .env -- turbo dev --",
