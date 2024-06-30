@@ -8,6 +8,9 @@ import { DAppKitProvider } from "@vechain/dapp-kit-react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { persister, queryClient } from "./utils/queryClient.ts";
+import { getConfig } from "@repo/config";
+
+const config = getConfig(import.meta.env.VITE_APP_ENV);
 
 const walletConnectOptions: WalletConnectOptions = {
   projectId: "a0b855ceaf109dbc8426479a4c3d38d8",
@@ -27,9 +30,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     >
       <ChakraProvider>
         <DAppKitProvider
-          nodeUrl={"https://testnet.vechain.org/"}
-          genesis={"test"}
           usePersistence
+          //   themeMode={isDark ? "DARK" : "LIGHT"}
+          themeMode="LIGHT"
+          requireCertificate={false}
+          genesis={config.network.genesis}
+          nodeUrl={config.nodeUrl}
+          logLevel={"WARN"}
           walletConnectOptions={walletConnectOptions}
         >
           <App />

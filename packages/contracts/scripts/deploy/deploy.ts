@@ -17,10 +17,9 @@ export async function deployAll(config: ContractsConfig) {
 
   // Deploy the fiorino contract
   const contractName = "Fiorino";
+  const owner = "0xf077b491b355e64048ce21e3a6fc4751eeea77fa";
   const FiorinoContract = await ethers.getContractFactory(contractName);
-  const fiorino = await FiorinoContract.deploy(
-    "0x9072EE3bd63a8E8e9f9b35F288FbD0E19fAD3167"
-  );
+  const fiorino = await FiorinoContract.deploy(owner);
   await fiorino.waitForDeployment();
   console.log(`${contractName} impl.: ${await fiorino.getAddress()}`);
 

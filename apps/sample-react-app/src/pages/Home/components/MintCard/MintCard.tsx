@@ -39,9 +39,8 @@ export const MintCard = () => {
     [mintMutation]
   );
 
-  const minter = useFiorinoMinter();
+  const { isMinter, minter } = useFiorinoMinter();
   console.log("minter", minter);
-  const isMinter = true;
   if (!isMinter) {
     return null;
   }

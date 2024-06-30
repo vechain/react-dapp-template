@@ -16,9 +16,6 @@ export const getFiorinoMinterQueryKey = () => {
 
 export const useFiorinoMinter = () => {
   const { account } = useWallet();
-  console.log("account", account);
-  console.log("contractInterface", contractInterface);
-  console.log("contractAddress", contractAddress);
   const results = useCall({
     contractInterface,
     contractAddress,

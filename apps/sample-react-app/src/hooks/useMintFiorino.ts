@@ -3,6 +3,7 @@ import { Fiorino__factory } from "@repo/contracts";
 import { useCallback, useMemo } from "react";
 import { useBuildTransaction } from "../utils";
 import { buildClause } from "../utils/buildClause";
+import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
 
 const GovernorInterface = Fiorino__factory.createInterface();
 
@@ -29,7 +30,7 @@ export const useMintFiorino = ({ onSuccess }: Props) => {
     []
   );
 
-  const refetchQueryKeys = useMemo(() => [], []);
+  const refetchQueryKeys = useMemo(() => [getFiorinoBalanceQueryKey()], []);
 
   return useBuildTransaction({
     clauseBuilder,

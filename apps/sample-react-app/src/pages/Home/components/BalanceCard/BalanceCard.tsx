@@ -3,9 +3,7 @@ import fiorino from "../../../../assets/fiorino.jpeg";
 import { useFiorinoBalance } from "../../../../hooks/useFiorinoBalance";
 
 export const BalanceCard = () => {
-  const balanceasd = useFiorinoBalance();
-  console.log("Balance", balanceasd);
-  const balance = "0";
+  const { balance } = useFiorinoBalance();
   return (
     <Card>
       <CardBody>

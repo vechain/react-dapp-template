@@ -76,10 +76,7 @@ export const useCall = <T extends Interface>({
     [method, keyArgs, args]
   );
 
-  const enableQuery = useMemo(
-    () => !!thor && thor.status.head.number > 0 && enabled,
-    [enabled, thor]
-  );
+  const enableQuery = useMemo(() => !!thor && enabled, [enabled, thor]);
 
   return useQuery({
     queryFn,
