@@ -61,6 +61,7 @@ async function overrideLocalConfigWithNewContracts(
   const localConfigPath = path.resolve(`../config/${fileToWrite}`);
   console.log(`Writing new config file to ${localConfigPath}`);
   fs.writeFileSync(localConfigPath, toWrite);
+  console.log(`*** Deployed successfully ***`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
