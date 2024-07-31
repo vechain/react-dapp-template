@@ -1,4 +1,5 @@
 import { AppConfig } from ".";
+
 const config: AppConfig = {
   environment: "solo-staging",
   basePath: "https://example.app",

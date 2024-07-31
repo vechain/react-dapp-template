@@ -1,4 +1,5 @@
 import { AppConfig } from ".";
+
 const config: AppConfig = {
   environment: "testnet",
   basePath: "https://example.org",
