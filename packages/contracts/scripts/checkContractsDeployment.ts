@@ -24,7 +24,10 @@ async function main() {
 // check if the contracts specified in the config file are deployed on the network, if not, deploy them (only on solo network)
 async function checkContractsDeployment() {
   try {
-    const code = await ethers.provider.getCode(config.fiorinoContractAddress);
+    const fiorinoContract = config.fiorinoContractAddress;
+    const code = fiorinoContract
+      ? await ethers.provider.getCode(fiorinoContract)
+      : "0x";
     if (code === "0x") {
       console.log(
         `fiorino contract not deployed at address ${config.fiorinoContractAddress}`
@@ -57,11 +60,15 @@ async function overrideLocalConfigWithNewContracts(
   const toWrite = `import { AppConfig } from \".\" \n const config: AppConfig = ${JSON.stringify(newConfig, null, 2)};
   export default config;`;
 
-  const fileToWrite = network.name === "solo" ? "local.ts" : "solo-staging.ts";
+  const configFiles: { [key: string]: string } = {
+    solo: "local.ts",
+    testnet: "testnet.ts",
+    main: "mainnet.ts",
+  };
+  const fileToWrite = configFiles[network.name];
   const localConfigPath = path.resolve(`../config/${fileToWrite}`);
   console.log(`Writing new config file to ${localConfigPath}`);
   fs.writeFileSync(localConfigPath, toWrite);
-  console.log(`*** Deployed successfully ***`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

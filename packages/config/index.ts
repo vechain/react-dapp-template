@@ -1,5 +1,4 @@
 import localConfig from "./local";
-import stagingConfig from "./solo-staging";
 import testnetConfig from "./testnet";
 import mainnetConfig from "./mainnet";
 import { EnvConfig, getContractsConfig } from "./contracts";
@@ -21,7 +20,6 @@ export const getConfig = (env?: EnvConfig): AppConfig => {
     );
   if (appEnv === "local") return localConfig;
   if (appEnv === "e2e") return localConfig;
-  if (appEnv === "solo-staging") return stagingConfig;
   if (appEnv === "testnet") return testnetConfig;
   if (appEnv === "mainnet") return mainnetConfig;
   throw new Error(`Unsupported VITE_APP_ENV ${appEnv}`);
