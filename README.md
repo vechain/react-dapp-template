@@ -83,6 +83,14 @@ or a log like this, that means the contracts are already deployed (if you run th
 @repo/contracts:check-contracts-deployment: fiorino contract already deployed
 ```
 
+## Add the custom network for development
+
+When on browser, open your desired Wallet go to Settings -> Network -> Add Custom Network and add the Network:
+
+Name: Solo
+
+URL: http://localhost:<port> - the port is the port defined in docker for the contracts canister (docker default port: 8669)
+
 ### Redeploy the contracts:
 
 ```bash
