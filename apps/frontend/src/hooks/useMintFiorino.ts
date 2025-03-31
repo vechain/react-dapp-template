@@ -1,48 +1,21 @@
-import { getConfig } from "@repo/config";
-import { Fiorino__factory } from "@repo/contracts";
-import { useCallback, useMemo } from "react";
-import { useBuildTransaction } from "../utils";
-import { buildClause } from "../utils/buildClause";
-import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
-import { useWallet } from "@vechain/vechain-kit";
-import { ethers } from "ethers";
+import { 
+  useSendTransaction,
+  Wallet
+} from '@vechain/vechain-kit';
 
-const GovernorInterface = Fiorino__factory.createInterface();
-
-type Props = { onSuccess?: () => void };
-
-type useMintFiorinoParams = {
-  amount: string;
-  receiver: string;
-};
-
-export const useMintFiorino = ({ onSuccess }: Props) => {
-  const { account } = useWallet();
-
-  const clauseBuilder = useCallback(
-    ({ amount, receiver }: useMintFiorinoParams) => {
-      const contractAmount = ethers.parseEther(amount);
-      return [
-        buildClause({
-          to: '0x31454bc37feCC3855bf9DF1cA769f25C82eD1e98',
-          contractInterface: GovernorInterface,
-          method: "mint",
-          args: [receiver, contractAmount],
-          comment: "mint fiorino",
-        }),
-      ];
-    },
-    []
-  );
-
-  const refetchQueryKeys = useMemo(
-    () => [getFiorinoBalanceQueryKey(account?.address || "")],
-    [account]
-  );
-
-  return useBuildTransaction({
-    clauseBuilder,
-    refetchQueryKeys,
-    onSuccess,
+export const useMintFioriono = (account: Wallet) => {
+  const {
+      sendTransaction: mintFiorino,
+      isTransactionPending: isPending,
+      status,
+      txReceipt,
+      error
+  } = useSendTransaction({
+      signerAccountAddress: account?.address,
+      onTxConfirmed: () => console.log("Mint Fiorino transaction successful"),
+      onTxFailedOrCancelled: () => console.log("Mint Fiorino transaction failed")
   });
+
+  return { mintFiorino, isPending, status, error, txReceipt };
 };
+
