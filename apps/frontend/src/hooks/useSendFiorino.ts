@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { useBuildTransaction } from "../utils";
 import { buildClause } from "../utils/buildClause";
 import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 
 const GovernorInterface = Fiorino__factory.createInterface();
@@ -24,7 +24,7 @@ export const useSendFiorino = ({ onSuccess }: Props) => {
       const contractAmount = ethers.parseEther(amount);
       return [
         buildClause({
-          to: getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress,
+          to: '0x31454bc37feCC3855bf9DF1cA769f25C82eD1e98',
           contractInterface: GovernorInterface,
           method: "transfer",
           args: [receiver, contractAmount],
@@ -36,7 +36,7 @@ export const useSendFiorino = ({ onSuccess }: Props) => {
   );
 
   const refetchQueryKeys = useMemo(
-    () => [getFiorinoBalanceQueryKey(account || "")],
+    () => [getFiorinoBalanceQueryKey(account?.address || "")],
     [account]
   );
 
@@ -46,3 +46,4 @@ export const useSendFiorino = ({ onSuccess }: Props) => {
     onSuccess,
   });
 };
+

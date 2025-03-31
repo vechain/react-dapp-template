@@ -2,8 +2,8 @@ import renderer from 'react-test-renderer';
 import React from 'react';
 import { test, expect } from 'vitest';
 import App from '../src/App';
-import { DAppKitProvider } from '@vechain/dapp-kit-react';
-import { WalletConnectOptions } from '@vechain/dapp-kit';
+import { DAppKitProvider } from '@vechain/vechain-kit';
+import { WalletConnectOptions } from '@vechain/vechain-kit';
 
 test('Welcome', async () => {
     const walletConnectOptions: WalletConnectOptions = {

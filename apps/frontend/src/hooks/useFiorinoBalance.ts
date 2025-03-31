@@ -1,12 +1,10 @@
 import { getConfig } from "@repo/config";
 import { Fiorino__factory } from "@repo/contracts";
 import { getCallKey, useCall } from "../utils/hooks/useCall";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 
-const contractAddress = getConfig(
-  import.meta.env.VITE_APP_ENV
-).fiorinoContractAddress;
+const contractAddress = '0x31454bc37feCC3855bf9DF1cA769f25C82eD1e98'
 const contractInterface = Fiorino__factory.createInterface();
 const method = "balanceOf";
 
@@ -19,7 +17,7 @@ export const useFiorinoBalance = () => {
     contractInterface,
     contractAddress,
     method,
-    args: [account],
+    args: [account?.address],
   });
 
   return {

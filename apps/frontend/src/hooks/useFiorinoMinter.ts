@@ -1,12 +1,11 @@
 import { getConfig } from "@repo/config";
 import { Fiorino__factory } from "@repo/contracts";
 import { getCallKey, useCall } from "../utils/hooks/useCall";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/vechain-kit";
 import { compareAddresses } from "@repo/utils/AddressUtils";
 
-const contractAddress = getConfig(
-  import.meta.env.VITE_APP_ENV
-).fiorinoContractAddress;
+const contractAddress = '0x31454bc37feCC3855bf9DF1cA769f25C82eD1e98'
+
 const contractInterface = Fiorino__factory.createInterface();
 const method = "owner";
 
@@ -25,7 +24,7 @@ export const useFiorinoMinter = () => {
   return {
     ...results,
     minter: results.data,
-    isMinter: compareAddresses(results.data || "", account || ""),
+    isMinter: compareAddresses(results.data || "", account?.address || ""),
     isMinterLoading: results.isPending,
   };
 };
