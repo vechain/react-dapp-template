@@ -1,21 +1,17 @@
-import { 
-  useSendTransaction,
-  Wallet
-} from '@vechain/vechain-kit';
+import {useSendTransaction, Wallet} from "@vechain/vechain-kit";
 
-export const useSendFioriono = (account: Wallet) => {
+export const useSendFiorino = (account: Wallet) => {
   const {
-      sendTransaction: sendFiorino,
-      isTransactionPending: isPending,
-      status,
-      txReceipt,
-      error
+    sendTransaction: sendFiorino,
+    isTransactionPending: isPending,
+    status,
+    txReceipt,
+    error,
   } = useSendTransaction({
-      signerAccountAddress: account?.address,
-      onTxConfirmed: () => console.log("Sent Fiorino transaction successful"),
-      onTxFailedOrCancelled: () => console.log("Sent Fiorino transaction failed")
+    signerAccountAddress: account?.address,
+    onTxConfirmed: () => console.log("Sent Fiorino transaction successful"),
+    onTxFailedOrCancelled: () => console.log("Sent Fiorino transaction failed"),
   });
 
-  return { sendFiorino, isPending, status, error, txReceipt };
+  return {sendFiorino, isPending, status, error, txReceipt};
 };
-
