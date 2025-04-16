@@ -1,130 +1,149 @@
-import {Badge, Button, Card, CardBody, FormControl, FormErrorMessage, FormLabel, HStack, Input, Text, VStack, useToast} from "@chakra-ui/react";
-import {useFiorinoMinter} from "../../../../hooks/useFiorinoMinter";
-import {useForm} from "react-hook-form";
-import {useMintFiorino} from "../../../../hooks/useMintFiorino";
-import {useWallet} from "@vechain/vechain-kit";
-import {ABIContract, Address, Clause, VET} from "@vechain/sdk-core";
-import {ThorClient} from "@vechain/sdk-network";
-import {getConfig} from "@repo/config";
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { useFiorinoMinter } from "../../../../hooks/useFiorinoMinter";
+import { useForm } from "react-hook-form";
+import { useMintFiorino } from "../../../../hooks/useMintFiorino";
+import { TransactionModal, useTransactionModal } from "@vechain/vechain-kit";
+
 interface MintForm {
   amount: string;
   receiver: string;
 }
 
+export enum TransactionModalStatus {
+  Ready = "ready",
+  Pending = "pending",
+  WaitingConfirmation = "waitingConfirmation",
+  Error = "error",
+  Success = "success",
+  UploadingMetadata = "uploadingMetadata",
+  Unknown = "unknown",
+}
+
 export const MintCard = () => {
   const form = useForm<MintForm>();
-  const toast = useToast();
-  const {account} = useWallet();
-  const {mintFiorino, txReceipt} = useMintFiorino(account);
+  const { errors } = form.formState;
+  const { isMinter } = useFiorinoMinter();
 
-  const {errors} = form.formState;
+  // Use TransactionModal hook from vechainkit instead of useDisclosure
+  const { isOpen, open, close } = useTransactionModal();
 
-  const onSubmit = async (data: MintForm) => {
-    const {receiver, amount} = data;
-    const contractAmount = BigInt(amount); // Convert amount to BigInt to avoid precision issues
-    const config = getConfig(import.meta.env.VITE_APP_ENV);
+  const amount = form.watch("amount");
+  const receiver = form.watch("receiver");
 
-    const contractClause = Clause.callFunction(Address.of(config.fiorinoContractAddress), ABIContract.ofAbi(config.fiorinoAbi).getFunction("transfer"), [receiver, contractAmount], VET.of(0), {comment: "transfer fiorino"});
+  const {
+    sendTransaction,
+    resetStatus,
+    isTransactionPending,
+    status,
+    error,
+    txReceipt,
+  } = useMintFiorino({ receiver, amount: amount || "0" });
 
-    try {
-      await mintFiorino([
-        {
-          to: contractClause.to,
-          value: contractClause.value.toString(),
-          data: contractClause.data.toString(),
-          comment: `${account} sent you a coffee!`,
-        },
-      ]);
-
-      if (txReceipt) {
-        const thorClient = ThorClient.at(config.nodeUrl);
-        const txReceiptStatus = await thorClient.transactions.waitForTransaction(txReceipt?.meta.txID);
-
-        if (txReceiptStatus?.reverted) {
-          toast({
-            title: "Transaction Failed",
-            description: "The transaction was reverted.",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Minted correctly!",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          });
-          form.reset();
-        }
-      }
-    } catch (error) {
-      console.error("Error sending coffee:", error);
-      toast({
-        title: "Error",
-        description: "An error occurred while sending the coffee.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
+  const handleSubmit = async () => {
+    sendTransaction(undefined);
+    open(); // Use open from useTransactionModal
   };
 
-  const {isMinter, minter} = useFiorinoMinter();
-  console.log("minter", minter);
-  if (!isMinter) {
-    return null;
-  }
+  const handleClose = () => {
+    resetStatus();
+    close(); // Use close from useTransactionModal
+    form.reset();
+  };
+
+  const isValid = form.formState.isValid;
+  const isLoading = isTransactionPending || status === "pending";
+
+  if (!isMinter) return null;
+
   return (
-    <Card>
-      <CardBody>
-        <VStack align={"stretch"} as="form" onSubmit={form.handleSubmit(onSubmit)} gap={4}>
-          <HStack justify={"flex-end"} w="full">
-            {isMinter && <Badge colorScheme="orange">Admin</Badge>}
-          </HStack>
-          <VStack align={"stretch"}>
-            <Text fontSize="lg" fontWeight="bold">
-              Mint
-            </Text>
-            <FormControl isInvalid={!!errors.amount}>
-              <FormLabel>Amount</FormLabel>
-              <Input
-                {...form.register("amount", {
-                  required: {
-                    value: true,
-                    message: "Amount is required",
-                  },
-                  pattern: {
-                    value: /^\d+$/,
-                    message: "Invalid amount",
-                  },
-                })}
-              />
-              <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.amount}>
-              <FormLabel>Receiver</FormLabel>
-              <Input
-                {...form.register("receiver", {
-                  required: {
-                    value: true,
-                    message: "Receiver is required",
-                  },
-                  pattern: {
-                    value: /^0x[a-fA-F0-9]{40}$/,
-                    message: "Invalid address",
-                  },
-                })}
-              />
-              <FormErrorMessage>{errors.receiver?.message}</FormErrorMessage>
-            </FormControl>
-            <Button type="submit" colorScheme="blue">
-              Mint
-            </Button>
+    <>
+      <Card>
+        <CardBody>
+          <VStack
+            align={"stretch"}
+            as="form"
+            onSubmit={form.handleSubmit(handleSubmit)}
+            gap={4}
+          >
+            <HStack justify={"flex-end"} w="full">
+              <Badge colorScheme="orange">Admin</Badge>
+            </HStack>
+            <VStack align={"stretch"}>
+              <Text fontSize="lg" fontWeight="bold">
+                Mint
+              </Text>
+              <FormControl isInvalid={!!errors.amount} isRequired>
+                <FormLabel>Amount</FormLabel>
+                <Input
+                  {...form.register("amount", {
+                    required: "Amount is required",
+                    pattern: {
+                      value: /^\d+$/,
+                      message: "Invalid amount",
+                    },
+                  })}
+                  isDisabled={isLoading}
+                />
+                <FormErrorMessage>{errors.amount?.message}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl isInvalid={!!errors.receiver} isRequired>
+                <FormLabel>Receiver</FormLabel>
+                <Input
+                  {...form.register("receiver", {
+                    required: "Receiver is required",
+                    pattern: {
+                      value: /^0x[a-fA-F0-9]{40}$/,
+                      message: "Invalid address",
+                    },
+                  })}
+                  isDisabled={isLoading}
+                />
+                <FormErrorMessage>{errors.receiver?.message}</FormErrorMessage>
+              </FormControl>
+
+              <Button
+                type="submit"
+                colorScheme="blue"
+                isDisabled={!isValid}
+                isLoading={isLoading}
+              >
+                Mint
+              </Button>
+            </VStack>
           </VStack>
-        </VStack>
-      </CardBody>
-    </Card>
+        </CardBody>
+      </Card>
+
+      <TransactionModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        status={
+          error
+            ? TransactionModalStatus.Error
+            : (status as TransactionModalStatus)
+        }
+        successTitle="Fiorino tokens minted successfully"
+        onTryAgain={handleSubmit}
+        showTryAgainButton
+        showExplorerButton
+        txId={txReceipt?.meta.txID}
+        pendingTitle={`Minting Fiorino tokens...`}
+        errorTitle="Error during minting"
+        errorDescription={error?.reason}
+      />
+    </>
   );
 };
