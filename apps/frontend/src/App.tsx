@@ -1,6 +1,6 @@
 import { Box, Container, VStack } from "@chakra-ui/react";
 import { Home } from "./pages/Home";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/vechain-kit";
 import { NotConnected } from "./pages/NotConnected";
 import { Navbar } from "./components/Navbar";
 
@@ -13,7 +13,7 @@ function App() {
         <VStack align="stretch" flex="1" overflowY={"auto"} py={4}>
           <Container maxW="container.lg" h="full">
             <VStack align="stretch">
-              {account ? <Home /> : <NotConnected />}
+              {account?.address ? <Home /> : <NotConnected />}
             </VStack>
           </Container>
         </VStack>

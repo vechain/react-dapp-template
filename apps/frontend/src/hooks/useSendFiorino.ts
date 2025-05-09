@@ -1,48 +1,32 @@
-import { getConfig } from "@repo/config";
-import { Fiorino__factory } from "@repo/contracts";
-import { useCallback, useMemo } from "react";
-import { useBuildTransaction } from "../utils";
-import { buildClause } from "../utils/buildClause";
-import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
-import { useWallet } from "@vechain/dapp-kit-react";
-import { ethers } from "ethers";
+import { useCallback, useMemo } from "react"
+import { useWallet } from "@vechain/vechain-kit"
+import { useBuildTransaction } from '../utils/hooks/useBuildTransaction'
+import { buildSendFiorino } from "../api/buildSendFiorino"
 
-const GovernorInterface = Fiorino__factory.createInterface();
+type useSendFiorinoProps = {
+  receiver: string
+  amount?: string | number
+  onSuccess?: () => void
+}
 
-type Props = { onSuccess?: () => void };
+export const getSendFiorino = (owner?: string, address?: string) => [owner, address]
 
-type useSendFiorinoParams = {
-  amount: string;
-  receiver: string;
-};
+export const useSendFiorino = ({ receiver, amount, onSuccess }: useSendFiorinoProps) => {  const { account } = useWallet()
 
-export const useSendFiorino = ({ onSuccess }: Props) => {
-  const { account } = useWallet();
-
-  const clauseBuilder = useCallback(
-    ({ amount, receiver }: useSendFiorinoParams) => {
-      const contractAmount = ethers.parseEther(amount);
-      return [
-        buildClause({
-          to: getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress,
-          contractInterface: GovernorInterface,
-          method: "transfer",
-          args: [receiver, contractAmount],
-          comment: "transfer fiorino",
-        }),
-      ];
-    },
-    []
-  );
+const clauseBuilder = useCallback(() => {
+  if (amount === undefined) throw new Error("amount is required")
+  if (receiver === undefined) throw new Error("receiver is required")
+  return [buildSendFiorino(receiver, amount)]
+}, [receiver, amount])
 
   const refetchQueryKeys = useMemo(
-    () => [getFiorinoBalanceQueryKey(account || "")],
-    [account]
-  );
+    () => [getSendFiorino(account?.address ?? undefined, receiver)],
+    [account?.address, receiver],
+  )
 
   return useBuildTransaction({
     clauseBuilder,
     refetchQueryKeys,
     onSuccess,
-  });
-};
+  })
+}

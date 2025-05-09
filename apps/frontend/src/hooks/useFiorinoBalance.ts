@@ -1,30 +1,31 @@
-import { getConfig } from "@repo/config";
-import { Fiorino__factory } from "@repo/contracts";
-import { getCallKey, useCall } from "../utils/hooks/useCall";
-import { useWallet } from "@vechain/dapp-kit-react";
-import { ethers } from "ethers";
+import { useCallback, useMemo } from "react"
+import { useWallet } from "@vechain/vechain-kit"
+import { useBuildTransaction } from '../utils/hooks/useBuildTransaction'
+import { buildFiorinoBalance } from "../api/buildFiorinoBalance"
 
-const contractAddress = getConfig(
-  import.meta.env.VITE_APP_ENV
-).fiorinoContractAddress;
-const contractInterface = Fiorino__factory.createInterface();
-const method = "balanceOf";
+type useFiorinoBalanceProps = {
+  address: string
+  onSuccess?: () => void
+}
 
-export const getFiorinoBalanceQueryKey = (address: string) =>
-  getCallKey({ method, keyArgs: [address] });
+export const getFiorinoBalance = (owner?: string, address?: string) => [owner, address]
 
-export const useFiorinoBalance = () => {
-  const { account } = useWallet();
-  const results = useCall({
-    contractInterface,
-    contractAddress,
-    method,
-    args: [account],
-  });
+export const useFiorinoBalance = ({ address, onSuccess }: useFiorinoBalanceProps) => {  
+  const { account } = useWallet()
 
-  return {
-    ...results,
-    balance: Number(ethers.formatEther(results.data || 0)),
-    isBalanceLoading: results.isPending,
-  };
-};
+const clauseBuilder = useCallback(() => {
+  if (address === undefined) throw new Error("address is required")
+  return [buildFiorinoBalance(address)]
+}, [address])
+
+  const refetchQueryKeys = useMemo(
+    () => [getFiorinoBalance(account?.address ?? undefined, address)],
+    [account?.address, address],
+  )
+
+  return useBuildTransaction({
+    clauseBuilder,
+    refetchQueryKeys,
+    onSuccess,
+  })
+}

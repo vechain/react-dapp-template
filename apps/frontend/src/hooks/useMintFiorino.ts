@@ -1,48 +1,32 @@
-import { getConfig } from "@repo/config";
-import { Fiorino__factory } from "@repo/contracts";
-import { useCallback, useMemo } from "react";
-import { useBuildTransaction } from "../utils";
-import { buildClause } from "../utils/buildClause";
-import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
-import { useWallet } from "@vechain/dapp-kit-react";
-import { ethers } from "ethers";
+import { useCallback, useMemo } from "react"
+import { useWallet } from "@vechain/vechain-kit"
+import { useBuildTransaction } from '../utils/hooks/useBuildTransaction'
+import { buildMintFiorino } from "../api/buildMintFiorino"
 
-const GovernorInterface = Fiorino__factory.createInterface();
+type useMintFiorinoProps = {
+  receiver: string
+  amount?: string | number
+  onSuccess?: () => void
+}
 
-type Props = { onSuccess?: () => void };
+export const getMintFiorino = (owner?: string, address?: string) => [owner, address]
 
-type useMintFiorinoParams = {
-  amount: string;
-  receiver: string;
-};
+export const useMintFiorino = ({ receiver, amount, onSuccess }: useMintFiorinoProps) => {  const { account } = useWallet()
 
-export const useMintFiorino = ({ onSuccess }: Props) => {
-  const { account } = useWallet();
-
-  const clauseBuilder = useCallback(
-    ({ amount, receiver }: useMintFiorinoParams) => {
-      const contractAmount = ethers.parseEther(amount);
-      return [
-        buildClause({
-          to: getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress,
-          contractInterface: GovernorInterface,
-          method: "mint",
-          args: [receiver, contractAmount],
-          comment: "mint fiorino",
-        }),
-      ];
-    },
-    []
-  );
+const clauseBuilder = useCallback(() => {
+  if (amount === undefined) throw new Error("amount is required")
+  if (receiver === undefined) throw new Error("receiver is required")
+  return [buildMintFiorino(receiver, amount)]
+}, [receiver, amount])
 
   const refetchQueryKeys = useMemo(
-    () => [getFiorinoBalanceQueryKey(account || "")],
-    [account]
-  );
+    () => [getMintFiorino(account?.address ?? undefined, receiver)],
+    [account?.address, receiver],
+  )
 
   return useBuildTransaction({
     clauseBuilder,
     refetchQueryKeys,
     onSuccess,
-  });
-};
+  })
+}
