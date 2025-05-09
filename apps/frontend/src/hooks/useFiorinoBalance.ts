@@ -1,31 +1,52 @@
-import { useCallback, useMemo } from "react"
-import { useWallet } from "@vechain/vechain-kit"
-import { useBuildTransaction } from '../utils/hooks/useBuildTransaction'
-import { buildFiorinoBalance } from "../api/buildFiorinoBalance"
+import { FormattingUtils } from "@repo/utils"
+import { useQuery } from "@tanstack/react-query"
+import { useConnex } from "@vechain/vechain-kit"
+import { getConfig } from "@repo/config"
+import { ethers } from "ethers"
 
-type useFiorinoBalanceProps = {
-  address: string
-  onSuccess?: () => void
+const config = getConfig(import.meta.env.VITE_APP_ENV);
+const FIORINO_CONTRACT = config.fiorinoContractAddress
+const FIORINO_ABI = config.fiorinoAbi
+
+export type TokenBalance = {
+  original: string
+  scaled: string
+  formatted: string
 }
 
-export const getFiorinoBalance = (owner?: string, address?: string) => [owner, address]
+/**
+ *  Get the fiorino balance of an address from the contract
+ * @param thor  The thor instance
+ * @param address  The address to get the balance of. If not provided, will return an error (for better react-query DX)
+ * @param scaleDecimals  The decimals of the token. Defaults to 18
+ * @returns Balance of the token in the form of {@link TokenBalance} (original, scaled down and formatted)
+ */
+export const getFiorinoBalance = async (thor: Connex.Thor, address?: string): Promise<TokenBalance> => {
+  if (!address) return Promise.reject(new Error("Address not provided"))
+  const functionAbi = FIORINO_ABI.find((e: any) => e.name === "balanceOf")
+  if (!functionAbi) return Promise.reject(new Error("Function abi not found for balanceOf"))
+  const res = await thor.account(FIORINO_CONTRACT).method(functionAbi).call(address)
 
-export const useFiorinoBalance = ({ address, onSuccess }: useFiorinoBalanceProps) => {  
-  const { account } = useWallet()
+  if (res.vmError) return Promise.reject(new Error(res.vmError))
 
-const clauseBuilder = useCallback(() => {
-  if (address === undefined) throw new Error("address is required")
-  return [buildFiorinoBalance(address)]
-}, [address])
+  const original = res.decoded[0]
+  const scaled = ethers.formatEther(original)
+  const formatted = scaled === "0" ? "0" : FormattingUtils.humanNumber(scaled)
 
-  const refetchQueryKeys = useMemo(
-    () => [getFiorinoBalance(account?.address ?? undefined, address)],
-    [account?.address, address],
-  )
+  return {
+    original,
+    scaled,
+    formatted,
+  }
+}
 
-  return useBuildTransaction({
-    clauseBuilder,
-    refetchQueryKeys,
-    onSuccess,
+export const getFiorinoBalanceQueryKey = (address?: string) => ["balance", "fiorino", address]
+export const useFiorinoBalance = (address?: string) => {
+  const { thor } = useConnex()
+
+  return useQuery({
+    queryKey: getFiorinoBalanceQueryKey(address),
+    queryFn: () => getFiorinoBalance(thor, address),
+    enabled: !!address,
   })
 }
