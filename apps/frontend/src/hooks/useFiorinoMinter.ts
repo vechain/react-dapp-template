@@ -1,29 +1,31 @@
-import {getConfig} from "@repo/config";
-import {Fiorino__factory} from "@repo/contracts";
-import {getCallKey, useCall} from "../utils/hooks/useCall";
-import {useWallet} from "@vechain/vechain-kit";
-import {compareAddresses} from "@repo/utils/AddressUtils";
+import { useCallback, useMemo } from "react"
+import { useWallet } from "@vechain/vechain-kit"
+import { useBuildTransaction } from '../utils/hooks/useBuildTransaction'
+import { buildFiorinoMinter } from "../api/buildFiorinoMinter"
 
-const contractAddress = getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress;
-const contractInterface = Fiorino__factory.createInterface();
-const method = "owner";
+type useFiorinoMinterProps = {
+  address: string
+  onSuccess?: () => void
+}
 
-export const getFiorinoMinterQueryKey = () => {
-  getCallKey({method});
-};
+export const getFiorinoMinter = (owner?: string, address?: string) => [owner, address]
 
-export const useFiorinoMinter = () => {
-  const {account} = useWallet();
-  const results = useCall({
-    contractInterface,
-    contractAddress,
-    method,
-  });
+export const useFiorinoMinter = ({ address, onSuccess }: useFiorinoMinterProps) => {  
+  const { account } = useWallet()
 
-  return {
-    ...results,
-    minter: results.data,
-    isMinter: compareAddresses(results.data || "", account?.address || ""),
-    isMinterLoading: results.isPending,
-  };
-};
+const clauseBuilder = useCallback(() => {
+  if (address === undefined) throw new Error("address is required")
+  return [buildFiorinoMinter(address)]
+}, [address])
+
+  const refetchQueryKeys = useMemo(
+    () => [getFiorinoMinter(account?.address ?? undefined, address)],
+    [account?.address, address],
+  )
+
+  return useBuildTransaction({
+    clauseBuilder,
+    refetchQueryKeys,
+    onSuccess,
+  })
+}

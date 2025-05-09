@@ -12,15 +12,15 @@ const FIORINO_ABI = config.fiorinoAbi
  * @param thor thor instance
  * @param receiver the address to mint the tokens to
  * @param amount the amount of tokens to mint. Should not already include decimals
- * @returns the clause to mint Fiorino tokens
+ * @returns the clause to send Fiorino tokens
  */
 
-export const buildMintFiorino = (
+export const buildSendFiorino = (
   receiver: string,
   amount: string | number
 ): any => {
-  const functionAbi = ABIContract.ofAbi(FIORINO_ABI).getFunction("transfer")
-  if (!functionAbi) throw new Error("Function abi not found for transfer")
+  const functionAbi = ABIContract.ofAbi(FIORINO_ABI).getFunction("send")
+  if (!functionAbi) throw new Error("Function abi not found for send")
   if (AddressUtils.isValid(receiver) === false) throw new Error("Invalid receiver address")
 
   const formattedAddress = FormattingUtils.humanAddress(receiver);
@@ -34,7 +34,7 @@ export const buildMintFiorino = (
 
   return {
     ...clause,
-    comment: `You have minter to ${formattedAddress}.`,
+    comment: `You have sent Fiorino to ${formattedAddress}.`,
     abi: functionAbi,
   }
 }

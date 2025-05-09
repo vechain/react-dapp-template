@@ -1,6 +1,7 @@
-import {useCallback, useMemo} from "react";
-import {useBuildTransaction, useConnex, useWallet} from "@vechain/vechain-kit";
-import { buildMintFiorino } from "../api/buildMintFiorino";
+import { useCallback, useMemo } from "react"
+import { useWallet } from "@vechain/vechain-kit"
+import { useBuildTransaction } from '../utils/hooks/useBuildTransaction'
+import { buildSendFiorino } from "../api/buildSendFiorino"
 
 type useSendFiorinoProps = {
   receiver: string
@@ -8,23 +9,24 @@ type useSendFiorinoProps = {
   onSuccess?: () => void
 }
 
-export const useSendFiorino = ({ receiver, amount, onSuccess }: useSendFiorinoProps) => {
-  const { thor } = useConnex()
-  const { account } = useWallet()
+export const getSendFiorino = (owner?: string, address?: string) => [owner, address]
 
-  const clauseBuilder = useCallback(() => {
-    if (amount === undefined) throw new Error("amount is required")
-    return [buildMintFiorino(thor, amount, receiver)]
-  }, [thor, amount, receiver])
+export const useSendFiorino = ({ receiver, amount, onSuccess }: useSendFiorinoProps) => {  const { account } = useWallet()
+
+const clauseBuilder = useCallback(() => {
+  if (amount === undefined) throw new Error("amount is required")
+  if (receiver === undefined) throw new Error("receiver is required")
+  return [buildSendFiorino(receiver, amount)]
+}, [receiver, amount])
 
   const refetchQueryKeys = useMemo(
-    () => [amount, account?.address ?? undefined, receiver],
-    [account?.address, receiver, amount]
-  );
+    () => [getSendFiorino(account?.address ?? undefined, receiver)],
+    [account?.address, receiver],
+  )
 
   return useBuildTransaction({
     clauseBuilder,
     refetchQueryKeys,
     onSuccess,
-  });
-};
+  })
+}

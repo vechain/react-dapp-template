@@ -10,14 +10,14 @@ const FIORINO_ABI = config.fiorinoAbi
 /**
  * Build the clause to mint B3TR tokens for the given address and amount
  * @param address the address to mint the tokens to
- * @returns the clause to get Fiorino balance
+ * @returns the clause to get Fiorino minter
  */
 
-export const buildFiorinoBalance = (
+export const buildFiorinoMinter= (
 address: string,
 ): any => {
-const functionAbi = ABIContract.ofAbi(FIORINO_ABI).getFunction("balanceOf")
-if (!functionAbi) throw new Error("Function abi not found for balanceOf")
+const functionAbi = ABIContract.ofAbi(FIORINO_ABI).getFunction("owner")
+if (!functionAbi) throw new Error("Function abi not found for owner")
 if (AddressUtils.isValid(address) === false) throw new Error("Invalid address")
 
 const formattedAddress = FormattingUtils.humanAddress(address);
@@ -31,7 +31,7 @@ const clause = Clause.callFunction(
 
 return {
   ...clause,
-  comment: `The Fiorino balance for ${formattedAddress}.`,
+  comment: `Check if ${formattedAddress} is a Fiorino minter.`,
   abi: functionAbi,
 }
 }
