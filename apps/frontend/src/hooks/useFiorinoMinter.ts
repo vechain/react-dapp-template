@@ -1,7 +1,7 @@
 import { getConfig } from "@repo/config";
 import { Fiorino__factory } from "@repo/contracts";
 import { getCallKey, useCall } from "../utils/hooks/useCall";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet } from "@vechain/vechain-kit";
 import { compareAddresses } from "@repo/utils/AddressUtils";
 
 const contractAddress = getConfig(
@@ -25,7 +25,7 @@ export const useFiorinoMinter = () => {
   return {
     ...results,
     minter: results.data,
-    isMinter: compareAddresses(results.data || "", account || ""),
+    isMinter: compareAddresses(results.data || "", account?.address || ""),
     isMinterLoading: results.isPending,
   };
 };
