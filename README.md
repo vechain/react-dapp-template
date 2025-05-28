@@ -4,8 +4,6 @@ This is a simple template of a decentralized application (DApp) running on VeCha
 
 This template creates a simple DApp that allows users to interact with an erc20 token contract called *Fiorino*. Users can send and receive tokens, and the contract owner can mint new tokens.
 
-This DApp is using [VeChain Kit](https://vechainkit.vechain.org/) as a dependency, which handles the login with wallet and with social, and which provides components and hooks available to use the dev. If you want the same template, but without this kit than checkout this [other repository](https://github.com/Agilulfo1820/react-dapp-template-with-dappkit).
-
 ## Requirements
 
 Ensure your development environment is set up with the following:
@@ -21,7 +19,7 @@ Ensure your development environment is set up with the following:
 
 A blazing-fast React application powered by Vite:
 
-- **Vechain dapp-kit:** Streamline wallet connections and interactions. [Learn more](https://docs.vechain.org/developer-resources/sdks-and-providers/dapp-kit)
+- **VeChain Kit:** This DApp is using [VeChain Kit](https://vechainkit.vechain.org/) as a dependency, which handles the login with wallet and with social, and which provides components and hooks available to use the dev. If you want the same template, but without this kit than checkout this [other repository](https://github.com/Agilulfo1820/react-dapp-template-with-dappkit).
 
 ### Contracts (packages/contracts) 📜
 
