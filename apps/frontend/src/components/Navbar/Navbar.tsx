@@ -1,5 +1,5 @@
 import { HStack, Heading, useBreakpointValue } from "@chakra-ui/react";
-import { WalletButton } from "@vechain/dapp-kit-react";
+import { WalletButton } from "@vechain/vechain-kit";
 
 export const Navbar = () => {
   return (

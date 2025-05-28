@@ -1,10 +1,10 @@
 import { useCallback } from "react"
 import { EnhancedClause, useSendTransaction } from "./useSendTransaction"
-import { useWallet } from "@vechain/dapp-kit-react"
+import { useWallet } from "@vechain/vechain-kit"
 import { useQueryClient } from "@tanstack/react-query"
 
 export type BuildTransactionProps<ClausesParams> = {
-  clauseBuilder: (props: ClausesParams) => EnhancedClause[]
+  clauses: (props: ClausesParams) => EnhancedClause[]
   refetchQueryKeys?: string[][]
   onSuccess?: () => void
   invalidateCache?: boolean
@@ -19,7 +19,7 @@ export type BuildTransactionProps<ClausesParams> = {
  * @returns An object containing the result of the `useSendTransaction` hook and a `sendTransaction` function.
  */
 export const useBuildTransaction = <ClausesParams>({
-  clauseBuilder,
+  clauses,
   refetchQueryKeys,
   invalidateCache = true,
   onSuccess,
@@ -47,7 +47,7 @@ export const useBuildTransaction = <ClausesParams>({
   }, [invalidateCache, onSuccess, queryClient, refetchQueryKeys])
 
   const result = useSendTransaction({
-    signerAccount: account,
+    signerAccount: account?.address,
     onTxConfirmed: handleOnSuccess,
   })
 
@@ -57,9 +57,9 @@ export const useBuildTransaction = <ClausesParams>({
    */
   const sendTransaction = useCallback(
     (props: ClausesParams) => {
-      result.sendTransaction(clauseBuilder(props))
+      result.sendTransaction(clauses(props))
     },
-    [clauseBuilder, result],
+    [clauses, result],
   )
 
   return { ...result, sendTransaction }

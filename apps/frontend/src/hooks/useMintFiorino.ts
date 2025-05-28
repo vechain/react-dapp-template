@@ -1,13 +1,9 @@
 import { getConfig } from "@repo/config";
 import { Fiorino__factory } from "@repo/contracts";
 import { useCallback, useMemo } from "react";
-import { useBuildTransaction } from "../utils";
-import { buildClause } from "../utils/buildClause";
 import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
-import { useWallet } from "@vechain/dapp-kit-react";
+import { useWallet, useBuildTransaction } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
-
-const GovernorInterface = Fiorino__factory.createInterface();
 
 type Props = { onSuccess?: () => void };
 
@@ -21,23 +17,24 @@ export const useMintFiorino = ({ onSuccess }: Props) => {
 
   const clauseBuilder = useCallback(
     ({ amount, receiver }: useMintFiorinoParams) => {
+      const GovernorInterface = Fiorino__factory.createInterface();
       const contractAmount = ethers.parseEther(amount);
-      return [
-        buildClause({
-          to: getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress,
-          contractInterface: GovernorInterface,
-          method: "mint",
-          args: [receiver, contractAmount],
-          comment: "mint fiorino",
-        }),
-      ];
+      const clausesArray: any[] = [];
+      clausesArray.push({
+        to: getConfig(import.meta.env.VITE_APP_ENV).fiorinoContractAddress,
+        contractInterface: GovernorInterface,
+        method: "mint",
+        args: [receiver, contractAmount],
+        comment: "mint fiorino",
+      });
+      return clausesArray;
     },
-    []
+    [account?.address]
   );
 
   const refetchQueryKeys = useMemo(
-    () => [getFiorinoBalanceQueryKey(account || "")],
-    [account]
+    () => [getFiorinoBalanceQueryKey(account?.address || "")],
+    [account?.address]
   );
 
   return useBuildTransaction({
