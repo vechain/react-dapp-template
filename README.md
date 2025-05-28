@@ -1,8 +1,10 @@
 # React Dapp Template 🚀
 
-This is a simple template of a decentralized application (DApp) built with React, and Solidity. It is designed to help you kickstart your DApp development journey.
+This is a simple template of a decentralized application (DApp) running on VeChain built with React, and Solidity. It is designed to help you kickstart your DApp development journey.
 
 This template creates a simple DApp that allows users to interact with an erc20 token contract called *Fiorino*. Users can send and receive tokens, and the contract owner can mint new tokens.
+
+This DApp is using [VeChain Kit](https://vechainkit.vechain.org/) as a dependency, which handles the login with wallet and with social, and which provides components and hooks available to use the dev. If you want the same template, but without this kit than checkout this [other repository](https://github.com/Agilulfo1820/react-dapp-template-with-dappkit).
 
 ## Requirements
 
