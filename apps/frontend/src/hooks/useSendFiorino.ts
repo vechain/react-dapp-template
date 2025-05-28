@@ -1,9 +1,8 @@
 import { getConfig } from "@repo/config";
 import { Fiorino__factory } from "@repo/contracts";
 import { useCallback, useMemo } from "react";
-import { useBuildTransaction } from "../utils";
 import { getFiorinoBalanceQueryKey } from "./useFiorinoBalance";
-import { useWallet } from "@vechain/vechain-kit";
+import { useWallet, useBuildTransaction } from "@vechain/vechain-kit";
 import { ethers } from "ethers";
 
 type Props = { onSuccess?: () => void };
@@ -16,7 +15,7 @@ type useSendFiorinoParams = {
 export const useSendFiorino = ({ onSuccess }: Props) => {
   const { account } = useWallet();
 
-  const clauses = useCallback(
+  const clauseBuilder = useCallback(
     ({ amount, receiver }: useSendFiorinoParams) => {
       const GovernorInterface = Fiorino__factory.createInterface();
       const contractAmount = ethers.parseEther(amount);
@@ -39,7 +38,7 @@ export const useSendFiorino = ({ onSuccess }: Props) => {
   );
 
   return useBuildTransaction({
-    clauses,
+    clauseBuilder,
     refetchQueryKeys,
     onSuccess,
   });
